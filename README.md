@@ -1,5 +1,5 @@
 # Description
-This project was created from scratch. I had to write the html, css and javascript to make a quiz and keep track of the score. Here is a link to the live page: 
+This project was created from scratch. I had to write the html, css and javascript to make a quiz and keep track of the score. Here is a link to the live page: https://elangworth.github.io/code-quiz/
 
 #User Story 
 AS A coding boot camp student
