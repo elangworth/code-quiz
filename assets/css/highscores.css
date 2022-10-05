@@ -1,0 +1,94 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #4287f5;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw; 
+    height: 100vh;
+}
+
+header {
+    display: flex;
+    background-color: #8bb5f9;
+    color: white;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.header {
+    margin-left: 10px;
+    margin-right: 10px; 
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 800px;
+    max-width: 80%;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px 2px;
+    margin-top: 100px;
+}
+
+div h1 {
+    margin-left: 5px;
+}
+
+#justify {
+    align-items: center;
+    justify-content: left;
+}
+
+.list-items {
+    display: flex;
+    list-style: none;
+    flex-direction: column;
+    color: white;
+    justify-content: left;
+    align-items: center;
+    padding: 3px;
+    
+}
+
+.list-element {
+    list-style: none;
+    background-color: #8bb5f9;
+    color: white;
+    justify-content: left;
+    align-items: center;
+    border: solid black 1px;
+    padding: 3px;   
+    width: 300px;   
+    border-radius: 5px;
+    margin: 3px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.button {
+    border-radius: 5px;
+    border: solid black 1px;
+    width: 80%;   
+    padding: 15px;
+    margin: 5px;
+    background-color: #8bb5f9;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    width: 300px;
+}
