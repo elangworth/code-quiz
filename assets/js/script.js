@@ -15,15 +15,17 @@ const listEL = document.getElementsByTagName('li');
 const finalScore = document.getElementById('final-score');
 const initials = document.getElementById('initials');
 const seeHighScores = document.getElementById('see-high-scores-container');
-const highScores = document.getElementById('high-scores');
+const highScoresUL = document.getElementById('high-scores-ul');
 const seeHighScoresLinkInHeader = document.getElementById('high-scores-link');
 const clearScoresButton = document.getElementById('clear-scores');
-//there are 5 questions
+const playAgainButton = document.getElementById('play-again');
+
 
 let currentQuestionIndex, shuffledQuestions;
 const decrementSeconds = 10; //when answer is wrong
-
+//game starts
 startButton.addEventListener('click', startGame);
+
 //runs when the next button is clicked and advances to the next question if there is one
 nextButton.addEventListener('click', () => {
   setNextQuestion();
@@ -31,8 +33,12 @@ nextButton.addEventListener('click', () => {
 
 //hides start button and displays random question and answers
 function startGame() {
+  startingSeconds.innerHTML = 60;
+  timeLeft = 60;
   startButton.classList.add('hide');
   rules.classList.add('hide');
+  seeHighScores.classList.add('hide');
+  quizContainer.classList.remove('hide');
   shuffledQuestions = questions.sort(() => Math.random() - .5);
   currentQuestionIndex = 0;
   answerButtonsElement.classList.remove('hide');
@@ -46,10 +52,11 @@ function setNextQuestion() {
   showQuestion(shuffledQuestions[currentQuestionIndex]);
   currentQuestionIndex++;
 }
+
+//Countdown timer
 let timeLeft = 60;
 document.getElementById('countdown-time').innerHTML = timeLeft;
 let timer;
-
 
 function updateCountdown(){
 timer = setInterval (function() {
@@ -104,20 +111,11 @@ function selectAnswer(e) {
   if (currentQuestionIndex < shuffledQuestions.length) {
     nextButton.classList.remove('hide');
   } else {
-    highScores.classList.remove('hide');
+    highScoresUL.classList.remove('hide');
     clearInterval(timer);
     endGame();
   }
 }
-
-
-
-// //loops through the buttons and adds the correct class to the right button
-// function setAllStatusClasses(correct) {
-//   Array.from(individualAnswerButtons).forEach(button => {
-//     setAllStatusClasses(button, correct);
-//   });
-// }
 
 //first it clears the status classes and then sets them again for the right and wrong answers
 function setStatusClass(button, correct) {
@@ -138,12 +136,14 @@ function clearStatusClass(individualAnswerButtons) {
   }
 }
 
+//makes sure the time left cannot be less than zero (if time was running out when a wrong answer was selected for example)
 function changeTimeLeft(){
   if (timeLeft < 0) {
     timeLeft = 0;
   }
 }
 
+//game ends and all done container appears to submit the score
 function endGame(){
   submitHighScoresElement.classList.remove('hide');
   quizContainer.classList.add('hide');
@@ -153,70 +153,79 @@ function endGame(){
   finalScore.innerHTML = timeLeft;
 };
 
-let highScoresText = [];
+//this area deals with getting and setting the highscores and displaying them
+let highScores = {};
 
+//creates the list elements to show the individual scores
 function renderHighScores() {
-  let highScoresList = "";
-  for (let i = 0; i < highScoresText.length; i++) {
-    let highScoresTexts = highScoresText[i];
-    let li = document.createElement('li');
-    li.textContent = highScoresList;
-    //li.appendChild(highScores);
-    highScores.appendChild(li);
+  highScoresUL.innerHTML= '';//resets the UL to be clear if clear scores is clicked
+  const initials = Object.keys(highScores);
+  for (let i = 0; i < initials.length; i++) {
+    let initial = initials[i];
+    li = document.createElement('li');  
+    li.textContent = initial;
+    highScoresUL.appendChild(li);
+    span = document.createElement('span');
+    span.textContent = highScores[initial];
+    li.appendChild(span);
   }
 }
-
+//sets up the page upon loading
 function init() {
-  let storedHighScores = JSON.parse(localStorage.getItem('highScoresText'));
-  if (storedHighScores !== null) {
-    highScoresText = storedHighScores;
+  const value = localStorage.getItem('highScores');
+  if (value !== null) {
+    highScores = JSON.parse(value);
+  } else {
+      highScores = {}
   }
-    renderHighScores();
-    storeHighScores();
-  }
-
+}
+//sets the highscores and stores them
 function storeHighScores() {
-  localStorage.setItem(highScoresText, JSON.stringify(highScoresText));
+  localStorage.setItem('highScores', JSON.stringify(highScores));
 }
 
+//moves on to the highscores part of the page
 submitButton.addEventListener('click', function(e) {
   submitHighScoresElement.classList.remove('hide');
   document.getElementById('final-score').innerHTML = timeLeft;
   e.preventDefault();
-  let initialsInput = document.querySelector('#initials').value;
+  let initialsInput = document.querySelector('#initials').value.trim();
   if (initialsInput === ''){
-    window.alert('Error: Initials cannot be blank!');
+    alert("This field is required");
+    return;
   }
-  highScoresText.push(initialsInput);
+  highScores[initialsInput] = timeLeft;
+  localStorage.setItem('highScores', JSON.stringify(highScores));
   initialsInput.value = '';
   displayHighScores();
-  window.localStorage.setItem('initials', initials);
   storeHighScores();
-  renderHighScores();
 });
 
-function displayHighScores() {
-  seeHighScores.classList.remove('hide');
-  submitHighScoresElement.classList.add('hide');
-  initials.textContent = localStorage.getItem('initials');
-  renderHighScores();
-  storeHighScores();
-  startButton.classList.remove('hide');
-  startButton.innerHTML = "Play Again";
-}
-
-function limitCharacters() {
-  let maxCharacters = 2;
-  if(liEL.value.length > maxCharacters){
-      liEL.value = liEl.value.subtr(0, maxCharacters);
-    }
-};
-
+// resets the highscores page to be blank
 function clearScores(){
-  highScoresText = [];
+  startingSeconds.innerHTML = 60;
+  window.localStorage.clear();
+  highScores = {};
+  for (let i = 0; i < listEL.length; i++) {
+    listEL[i].classList.add('hide');
+  }
+  while (listEL.firstChild) {
+    listEL.removeChild(listEL.firstChild);
+  }
+  
 }
 
 clearScoresButton.addEventListener('click', clearScores);
+
+//displays the high scores when the user inputs their initials
+function displayHighScores() {
+  seeHighScores.classList.remove('hide');
+  quizContainer.classList.add('hide');
+  submitHighScoresElement.classList.add('hide');
+  renderHighScores();
+}
+ 
+playAgainButton.addEventListener('click', startGame);
 
 seeHighScoresLinkInHeader.addEventListener('click', displayHighScores);
 

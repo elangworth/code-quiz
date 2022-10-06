@@ -105,10 +105,31 @@ header h1 a:hover {
     color: black;
 }
 
-#high-scores {
+#high-scores-ul {
     list-style: none;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
 }
 
-#high-scores li {
-    background-color: #8bf9cf;
+#high-scores-ul li{
+    background-color: #4287f5;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;    
+    color: white;   
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    
+    font-size: 30px;
+    text-align: center;
+}
+
+#high-scores-ul li span {
+    margin-left: 20px;  
+}
+
+#high-scores-ul li:hover{
+    background-color: #8bb5f9;
 }
